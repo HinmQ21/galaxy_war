@@ -1,0 +1,76 @@
+# depslib dependency file v1.0
+1681895508 source:c:\users\admin\onedrive\documents\shooter\main.cpp
+	"main.h"
+
+1681525746 source:c:\users\admin\onedrive\documents\shooter\draw.cpp
+	"draw.h"
+
+1678985779 c:\users\admin\onedrive\documents\shooter\draw.h
+	"common.h"
+	<SDL_image.h>
+
+1680890607 c:\users\admin\onedrive\documents\shooter\common.h
+	<bits/stdc++.h>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
+	<SDL_ttf.h>
+	"defs.h"
+	"structs.h"
+
+1681894819 c:\users\admin\onedrive\documents\shooter\defs.h
+
+1681889719 c:\users\admin\onedrive\documents\shooter\structs.h
+
+1681913341 source:c:\users\admin\onedrive\documents\shooter\input.cpp
+	"input.h"
+
+1681912877 c:\users\admin\onedrive\documents\shooter\input.h
+	"common.h"
+
+1681830850 source:c:\users\admin\onedrive\documents\shooter\init.cpp
+	"init.h"
+
+1681830841 c:\users\admin\onedrive\documents\shooter\init.h
+	"common.h"
+
+1681833029 c:\users\admin\onedrive\documents\shooter\main.h
+	"common.h"
+
+1681897831 source:c:\users\admin\onedrive\documents\shooter\stage.cpp
+	"stage.h"
+
+1681830351 c:\users\admin\onedrive\documents\shooter\stage.h
+	"common.h"
+
+1681452817 source:c:\users\admin\onedrive\documents\shooter\util.cpp
+	"util.h"
+
+1680056774 c:\users\admin\onedrive\documents\shooter\util.h
+	"common.h"
+
+1681830850 source:c:\users\admin\onedrive\documents\shooter\sound.cpp
+	"sound.h"
+
+1681830735 c:\users\admin\onedrive\documents\shooter\sound.h
+	"common.h"
+
+1681621831 source:c:\users\admin\onedrive\documents\shooter\text.cpp
+	"text.h"
+
+1680838453 c:\users\admin\onedrive\documents\shooter\text.h
+	"common.h"
+	<SDL_ttf.h>
+
+1681663190 source:c:\users\admin\onedrive\documents\shooter\title.cpp
+	"title.h"
+
+1681567469 c:\users\admin\onedrive\documents\shooter\title.h
+	"common.h"
+
+1681912611 source:c:\users\admin\onedrive\documents\shooter\design.cpp
+	"design.h"
+
+1681664217 c:\users\admin\onedrive\documents\shooter\design.h
+	"common.h"
+

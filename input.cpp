@@ -1,0 +1,109 @@
+#include"input.h"
+void doKeyUp(SDL_KeyboardEvent *event)
+{
+	if (event->repeat == 0 && event->keysym.scancode < MAX_KEYBOARD_KEYS)
+	{
+		app.keyboard[event->keysym.scancode] = 0;
+	}
+}
+
+void doKeyDown(SDL_KeyboardEvent *event)
+{
+	if (event->repeat == 0 && event->keysym.scancode < MAX_KEYBOARD_KEYS)
+	{
+		app.keyboard[event->keysym.scancode] = 1;
+	}
+}
+void doMouseButtonUp(SDL_MouseButtonEvent *event)
+{
+	app.mouse.button[event->button] = 0;
+}
+
+void doMouseButtonDown(SDL_MouseButtonEvent *event)
+{
+	app.mouse.button[event->button] = 1;
+}
+void doInput()
+{
+	SDL_Event event;
+
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
+			case SDL_QUIT:
+				exit(0);
+				break;
+            case SDL_KEYDOWN:
+                doKeyDown(&event.key);
+                break;
+            case SDL_KEYUP:
+                doKeyUp(&event.key);
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                doMouseButtonDown(&event.button);
+                break;
+
+            case SDL_MOUSEBUTTONUP:
+                doMouseButtonUp(&event.button);
+                break;
+
+			default:
+				break;
+		}
+	}
+	SDL_GetMouseState(&app.mouse.x , &app.mouse.y);
+}
+void doInputReset()
+{
+	SDL_Event event;
+
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
+			case SDL_QUIT:
+				exit(0);
+				break;
+            case SDL_KEYDOWN:
+                if(event.key.keysym.scancode == SDL_SCANCODE_Y){
+                    app.again = 1;
+                }else if(event.key.keysym.scancode == SDL_SCANCODE_N){
+                    app.again = 0;
+                }
+                break;
+            case SDL_KEYUP:
+                if(event.key.keysym.scancode == SDL_SCANCODE_Y){
+                    app.again = 0;
+                }
+			default:
+				break;
+		}
+	}
+}
+void doInputStart()
+{
+	SDL_Event event;
+
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
+			case SDL_QUIT:
+				exit(0);
+				break;
+            case SDL_MOUSEBUTTONDOWN:
+                doMouseButtonDown(&event.button);
+                break;
+
+            case SDL_MOUSEBUTTONUP:
+                doMouseButtonUp(&event.button);
+                break;
+
+			default:
+				break;
+		}
+	}
+	SDL_GetMouseState(&app.mouse.x , &app.mouse.y);
+}
+
