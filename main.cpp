@@ -18,9 +18,9 @@ int main(int argc, char *argv[])
             SDL_RenderClear(app.renderer);
         	drawBackground();
         	drawGameOver();
+        	drawYesNo();
         	drawMouse();
-        	drawText(SCREEN_WIDTH / 2, SCREEN_HEIGHT/2 + 200, 153, 255, 255, TEXT_CENTER, "PRESS Y OR N");
-            doInputReset();
+        	doYesNo();
             if(app.again){
                 app.gameover = 0;
                 resetStage();

@@ -36,6 +36,7 @@ static void doDebris();
 static void addExplosions(int x, int y, int num);
 static void addDebris(Entity *e);
 static void addBigDebris(Entity *e);
+static void die(Entity* self);
 static Entity *player;
 static Entity *boss;
 static SDL_Texture *bulletTexture ;
@@ -44,10 +45,12 @@ static SDL_Texture *alienBulletTexture;
 static SDL_Texture *pointsTexture;
 static SDL_Texture *targetTexture;
 static SDL_Texture *meteoriteTexture;
+static SDL_Texture *meteorite_Texture;
 static SDL_Texture *bossTexture;
 static SDL_Texture *bigExplosionTexture;
 static SDL_Texture *bossBulletTexture1;
 static SDL_Texture *bossBulletTexture2;
+static SDL_Texture *bossBulletTexture3;
 static int enemySpawnTimer;
 static int meteoriteSpawnTimer;
 static int bossSpawnTimes;
@@ -74,7 +77,9 @@ void initStage()
 	bigExplosionTexture = loadTexture((char*)"gfx/bigExplosion.png");
 	bossBulletTexture1 = loadTexture((char*)"gfx/boss_bullet1.png");
 	bossBulletTexture2 = loadTexture((char*)"gfx/boss_bullet2.png");
+    bossBulletTexture3 = loadTexture((char*)"gfx/alienBigBullet.png");
 	meteoriteTexture = loadTexture((char*)"gfx/meteorite.png");
+	meteorite_Texture = loadTexture((char*)"gfx/meteo.png");
     resetStage();
 }
 
@@ -210,12 +215,17 @@ static void logic()
 	doPoints();
 	spawnMeteorite();
 	doMeteorites();
-	if(stage.defeat < 5)
+	if(stage.defeat < 2)
 	{
 	    spawnEnemies();
 	}else{
-	    BossAppear = true;
+	    //spawnEnemies();
+	    if(bossSpawnTimes > 0)
+	    {
+        BossAppear = true;
         spawnBoss();
+	    }
+
 	}
 	clipPlayer();
 
@@ -285,7 +295,7 @@ static void doMeteorites(){
         m->x += m->dx;
         m->y += m->dy;
         if(m->y > SCREEN_HEIGHT + m->h || m->health <= 0){
-            addBigDebris(m);
+            if(m->health <= 0)addDebris(m);
             if(m == stage.meteoTail){
                 stage.meteoTail = prev;
             }
@@ -294,6 +304,23 @@ static void doMeteorites(){
             m = prev;
         }
         prev = m;
+    }
+}
+static void bossfireBullet(Entity *e){
+    Entity *bullet;
+    for(int i = 1; i <= 3; i++){
+	bullet = (Entity*)malloc(sizeof(Entity));
+	memset(bullet, 0, sizeof(Entity));
+	stage.bulletTail->next = bullet;
+	stage.bulletTail = bullet;
+	bullet->x = e->x ;
+	bullet->y = e->y + 100*i - 10;
+	bullet->health = 3;
+	bullet->side = SIDE_BOSS;
+	bullet->dx = -ALIEN_BULLET_SPEED*2;
+	bullet->texture = bossBulletTexture3;
+	SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
+    e->reload = FPS + ( rand() % FPS * 2 );
     }
 }
 static void doEnemies()
@@ -313,7 +340,13 @@ static void doEnemies()
 			e->y = MIN(MAX(e->y, 0), SCREEN_HEIGHT - e->h);
 			if (player != NULL && --e->reload <= 0)
 			{
+			    if(e->side == SIDE_ALIEN)
 				fireAlienBullet(e);
+				else {
+                        if(rand()%2)
+                        bossfireBullet(e);
+                else fireAlienBullet(e);
+				}
 				playSound(SND_ALIEN_FIRE, CH_ALIEN_FIRE);
 			}
 		}
@@ -331,6 +364,7 @@ static void doAiForEnemy(){
         }
     }
 }
+
 
 static void doFighters()
 {
@@ -352,10 +386,11 @@ static void doFighters()
         if(e->side == SIDE_BOSS){
             if(e->x <= SCREEN_WIDTH - e->w){
                 e->dx = 0;
-                //e->dy = -2 + rand()%5;
             }
+
             if(e->health <= 0) {
                     addBigDebris(e);
+                    //die(e);
                     stage.score += 100;
                     highscore = MAX(highscore, stage.score);
                     app.win = 1;
@@ -366,6 +401,7 @@ static void doFighters()
 		if (e->health <= 0)
 		{
 		    addExplosions(e->x,e->y,32);
+		    //die(e);
             addDebris(e);
 			if (e == player)
 			{
@@ -588,7 +624,7 @@ static void addDebris(Entity *e)
 			d->dy = -(5 + (rand() % 12));
 			d->life = FPS ;
 
-			if(e==player){
+			if(e==player || e->side == SIDE_METEO){
                 d->texture = e->_texture;
 			}else d->texture = e->texture;
 
@@ -675,10 +711,10 @@ static void fireBullet()
 	SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
 
 	bullet->y += (player->h / 2) - (bullet->h / 2);
+	bullet->x += player->w/2;
 
 	player->reload = 16;
 }
-
 static void fireAlienBullet(Entity *e)
 {
 	Entity *bullet;
@@ -695,6 +731,7 @@ static void fireAlienBullet(Entity *e)
 	bullet->texture = alienBulletTexture;
 	bullet->side = SIDE_ALIEN;
 	bullet->health = 1;
+
 	}
 	else {
             if(rand()%2)
@@ -714,6 +751,24 @@ static void fireAlienBullet(Entity *e)
 	bullet->dy *= ALIEN_BULLET_SPEED;
 
 	e->reload = FPS + ( rand() % FPS * 2 );
+}
+static void die(Entity *self)
+{
+	int i, x, y;
+    SDL_Rect rect;
+    SDL_QueryTexture(self->texture, NULL, NULL, &rect.w, &rect.h);
+
+	for (i = 0 ; i < 25 ; i++)
+	{
+		x = self->x + (rect.w / 2);
+		x -= rand() % rect.w;
+		x += rand() % rect.w;
+
+		y = self->y + (rect.h / 2);
+		y -= rand() % rect.h;
+		y += rand() % rect.h;
+        addExplosions(x,y,16);
+	}
 }
 
 static void doBullets()
@@ -799,7 +854,7 @@ static void spawnEnemies()
 		SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->w, &enemy->h);
 
 		enemy->dx = -(2 + (rand() % 2));
-        enemy->dy = (-100+rand() % 200);
+        enemy->dy = (-100 + rand() % 201);
         enemy->dy /= 100;
 
 		enemySpawnTimer = 30 + (rand() % 60);
@@ -814,14 +869,14 @@ static void spawnBoss(){
     Entity *boss;
     boss = (Entity*)malloc(sizeof(Entity));
     memset(boss, 0, sizeof(Entity));
+    stage.fighterTail->next = boss;
+    stage.fighterTail = boss;
 
     boss->texture = bossTexture;
     SDL_QueryTexture(boss->texture, NULL, NULL, &boss->w, &boss->h);
-    stage.fighterTail->next = boss;
-    stage.fighterTail = boss;
     boss->x = SCREEN_WIDTH;
     boss->y = SCREEN_HEIGHT / 2 - boss->h/2;
-    boss->dx --;
+    boss->dx = -1;
     boss->side = SIDE_BOSS;
     boss->health = BOSS_MAX_HEALTH;
     boss->reload = FPS * (1 + (rand() % 3));
@@ -836,11 +891,13 @@ static void spawnMeteorite(){
         stage.meteoTail = meteo;
 
         meteo->texture = meteoriteTexture;
+        meteo->_texture = meteorite_Texture;
         SDL_QueryTexture(meteo->texture, NULL, NULL, &meteo->w, &meteo->h);
         meteo->x = rand() % SCREEN_WIDTH;
         meteo->y = -meteo->h;
         meteo->dx = -3;
         meteo->dy = 4;
+        meteo->side = SIDE_METEO;
         meteo->health = 1;
         meteoriteSpawnTimer = 2*FPS + rand()% (3*FPS);
     }
@@ -1008,13 +1065,13 @@ static void drawPoints()
 	}
 }
 static void drawBossBar(){
-    drawText(100, SCREEN_HEIGHT - GLYPH_HEIGHT - 5, 255, 255, 255, TEXT_LEFT, "BOSS:");
+    drawText(100, SCREEN_HEIGHT - GLYPH_HEIGHT , 255, 255, 255, TEXT_LEFT, "BOSS:");
 
     SDL_Rect r;
-    r.h = 40;
+    r.h = 20;
     r.w = BOSS_BAR_LEN -(-boss->health + BOSS_MAX_HEALTH)*(BOSS_BAR_LEN/BOSS_MAX_HEALTH);
     r.x = 200;
-    r.y = SCREEN_HEIGHT - 40;
+    r.y = SCREEN_HEIGHT - 20;
     SDL_SetRenderDrawColor(app.renderer,255, 0, 0, 0);
     SDL_RenderFillRect(app.renderer, &r);
 

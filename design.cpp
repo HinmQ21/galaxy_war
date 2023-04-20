@@ -31,6 +31,10 @@ static SDL_Texture* backbut1;
 static SDL_Texture* backbut2;
 static SDL_Texture* homebut1;
 static SDL_Texture* homebut2;
+static SDL_Texture* yesbut1;
+static SDL_Texture* yesbut2;
+static SDL_Texture* nobut1;
+static SDL_Texture* nobut2;
 static SDL_Texture* instruction;
 
 static int reveal = 0;
@@ -66,6 +70,10 @@ void initTitle()
     backbut2  = loadTexture("gfx/colored_back.png");
     homebut1 = loadTexture("gfx/home.png");
     homebut2 = loadTexture("gfx/colored_home.png");
+    yesbut1 = loadTexture("gfx/yes.png");
+    yesbut2 = loadTexture("gfx/colored_yes.png");
+    nobut1 = loadTexture("gfx/no.png");
+    nobut2 = loadTexture("gfx/colored_no.png");
     instruction = loadTexture("gfx/instruction.png");
 }
 static bool InStartButton(){
@@ -237,6 +245,42 @@ void drawHome(){
     if(InHomeButton()){
         blit(homebut2,SCREEN_WIDTH - r.w - 120 , 10);
     }else blit(homebut1,SCREEN_WIDTH - r.w - 120, 10);
+}
+bool InYesButton(){
+    SDL_Rect r;
+    SDL_QueryTexture(yesbut1, NULL, NULL, &r.w, &r.h);
+    return collision(app.mouse.x - MOUSE_HEIGHT/2,app.mouse.y - MOUSE_WIDTH/2,MOUSE_WIDTH,MOUSE_HEIGHT,SCREEN_WIDTH/2 - 100 , 550, r.w , r.h );
+}
+void drawYes(){
+    SDL_Rect r;
+    SDL_QueryTexture(yesbut1, NULL, NULL, &r.w, &r.h);
+    if(InYesButton()){
+        blit(yesbut2,SCREEN_WIDTH/2 - 100 , 550 );
+    }else blit(yesbut1,SCREEN_WIDTH/2 - 100 , 550);
+}
+bool InNoButton(){
+    SDL_Rect r;
+    SDL_QueryTexture(nobut1, NULL, NULL, &r.w, &r.h);
+    return collision(app.mouse.x - MOUSE_HEIGHT/2,app.mouse.y - MOUSE_WIDTH/2,MOUSE_WIDTH,MOUSE_HEIGHT,SCREEN_WIDTH/2 + 70 , 550, r.w , r.h );
+}
+void drawNo(){
+    SDL_Rect r;
+    SDL_QueryTexture(nobut1, NULL, NULL, &r.w, &r.h);
+    if(InNoButton()){
+        blit(nobut2,SCREEN_WIDTH/2 + 70 , 550 );
+    }else blit(nobut1,SCREEN_WIDTH/2 + 70 , 550);
+}
+void drawYesNo(){
+    drawYes();
+    drawNo();
+}
+void doYesNo(){
+    if(InYesButton() && app.mouse.button[SDL_BUTTON_LEFT]){
+        app.again = 1;
+    }
+    if(InNoButton() && app.mouse.button[SDL_BUTTON_LEFT]){
+        exit(1);
+    }
 }
 static void drawLogo()
 {

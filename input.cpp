@@ -54,33 +54,7 @@ void doInput()
 	}
 	SDL_GetMouseState(&app.mouse.x , &app.mouse.y);
 }
-void doInputReset()
-{
-	SDL_Event event;
 
-	while (SDL_PollEvent(&event))
-	{
-		switch (event.type)
-		{
-			case SDL_QUIT:
-				exit(0);
-				break;
-            case SDL_KEYDOWN:
-                if(event.key.keysym.scancode == SDL_SCANCODE_Y){
-                    app.again = 1;
-                }else if(event.key.keysym.scancode == SDL_SCANCODE_N){
-                    app.again = 0;
-                }
-                break;
-            case SDL_KEYUP:
-                if(event.key.keysym.scancode == SDL_SCANCODE_Y){
-                    app.again = 0;
-                }
-			default:
-				break;
-		}
-	}
-}
 void doInputStart()
 {
 	SDL_Event event;

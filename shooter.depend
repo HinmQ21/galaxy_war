@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1681895508 source:c:\users\admin\onedrive\documents\shooter\main.cpp
+1682005101 source:c:\users\admin\onedrive\documents\shooter\main.cpp
 	"main.h"
 
 1681525746 source:c:\users\admin\onedrive\documents\shooter\draw.cpp
@@ -18,11 +18,11 @@
 	"defs.h"
 	"structs.h"
 
-1681894819 c:\users\admin\onedrive\documents\shooter\defs.h
+1681974842 c:\users\admin\onedrive\documents\shooter\defs.h
 
 1681889719 c:\users\admin\onedrive\documents\shooter\structs.h
 
-1681913341 source:c:\users\admin\onedrive\documents\shooter\input.cpp
+1682005112 source:c:\users\admin\onedrive\documents\shooter\input.cpp
 	"input.h"
 
 1681912877 c:\users\admin\onedrive\documents\shooter\input.h
@@ -34,10 +34,10 @@
 1681830841 c:\users\admin\onedrive\documents\shooter\init.h
 	"common.h"
 
-1681833029 c:\users\admin\onedrive\documents\shooter\main.h
+1682005072 c:\users\admin\onedrive\documents\shooter\main.h
 	"common.h"
 
-1681897831 source:c:\users\admin\onedrive\documents\shooter\stage.cpp
+1682007505 source:c:\users\admin\onedrive\documents\shooter\stage.cpp
 	"stage.h"
 
 1681830351 c:\users\admin\onedrive\documents\shooter\stage.h
@@ -68,7 +68,7 @@
 1681567469 c:\users\admin\onedrive\documents\shooter\title.h
 	"common.h"
 
-1681912611 source:c:\users\admin\onedrive\documents\shooter\design.cpp
+1682006742 source:c:\users\admin\onedrive\documents\shooter\design.cpp
 	"design.h"
 
 1681664217 c:\users\admin\onedrive\documents\shooter\design.h

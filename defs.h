@@ -14,6 +14,7 @@
 #define SIDE_PLAYER 0
 #define SIDE_ALIEN  1
 #define SIDE_BOSS 2
+#define SIDE_METEO 3
 
 #define BOSS_BAR_LEN 800
 #define BOSS_MAX_HEALTH 20

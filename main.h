@@ -14,6 +14,8 @@ extern void prepareScene();
 extern void presentScene();
 extern void drawContinue();
 extern void drawMouse();
+extern void drawYesNo();
+extern void doYesNo();
 extern void doContinue();
 extern void drawQuit();
 extern void doQuit();
