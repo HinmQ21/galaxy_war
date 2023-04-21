@@ -22,7 +22,7 @@ void initSDL() {
 		printf("Couldn't initialize SDL Mixer\n");
 		exit(1);
 	}
-
+    SDL_ShowCursor(0);
 	Mix_AllocateChannels(MAX_SND_CHANNELS);
 }
 void initGame(){

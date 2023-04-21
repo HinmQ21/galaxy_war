@@ -10,6 +10,8 @@ extern void playSound(int id, int channel);
 extern void drawText(int x, int y, int r, int g, int b, int align,char* format, ...);
 extern void drawPause();
 extern void drawHome();
+extern void drawYesNo();
+extern void doYesNo();
 extern void initTitle();
 extern bool InPauseButton();
 extern bool InHomeButton();

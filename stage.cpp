@@ -14,6 +14,9 @@ static void doEnemies();
 static void doBullets();
 static void doPoints();
 static void doMeteorites();
+static void doShield();
+static void spawnShield();
+void drawMouse();
 void doStarfield();
 static void drawFighters();
 static void drawBullets();
@@ -41,6 +44,8 @@ static Entity *player;
 static Entity *boss;
 static SDL_Texture *bulletTexture ;
 static SDL_Texture *enemyTexture;
+static SDL_Texture *shieldTexure;
+static SDL_Texture *coverplayer;
 static SDL_Texture *alienBulletTexture;
 static SDL_Texture *pointsTexture;
 static SDL_Texture *targetTexture;
@@ -54,7 +59,8 @@ static SDL_Texture *bossBulletTexture3;
 static int enemySpawnTimer;
 static int meteoriteSpawnTimer;
 static int bossSpawnTimes;
-static int stageResetTimer;
+static int shieldSpawnTimer;
+int gameoverTimer;
 static int highscore;
 static Star stars[MAX_STARS];
 static void doAiForEnemy();
@@ -80,6 +86,8 @@ void initStage()
     bossBulletTexture3 = loadTexture((char*)"gfx/alienBigBullet.png");
 	meteoriteTexture = loadTexture((char*)"gfx/meteorite.png");
 	meteorite_Texture = loadTexture((char*)"gfx/meteo.png");
+	shieldTexure = loadTexture((char*)"gfx/shieldpod.png");
+	coverplayer = loadTexture((char*)"gfx/coverplayer.png");
     resetStage();
 }
 
@@ -127,6 +135,11 @@ void resetStage()
         stage.meteoHead.next = e->next;
         free(e);
     }
+    while(stage.shieldHead.next){
+        e = stage.shieldHead.next;
+        stage.shieldHead.next = e->next;
+        free(e);
+    }
 	memset(&stage, 0, sizeof(Stage));
 	stage.fighterTail = &stage.fighterHead;
 	stage.bulletTail = &stage.bulletHead;
@@ -134,19 +147,20 @@ void resetStage()
 	stage.debrisTail = &stage.debrisHead;
     stage.pointsTail = &stage.pointsHead;
     stage.meteoTail = &stage.meteoHead;
+    stage.shieldTail = &stage.shieldHead;
 	initPlayer();
 	initStarfield();
 
     bossSpawnTimes = 1;
 	enemySpawnTimer = 0;
 	meteoriteSpawnTimer = 3*FPS;
+	shieldSpawnTimer = 5*FPS;
+	gameoverTimer = FPS * 2;
 	BossAppear = false;
 
     stage.score = 0;
     stage.defeat = 0;
     app.win = false;
-
-	stageResetTimer = FPS * 3;
 }
 void initMouse(){
     targetTexture = loadTexture((char*)"gfx/target.png");
@@ -164,9 +178,13 @@ void initGameOver(){
     gameOverText = loadTexture("gfx/gameover.png");
 }
 void drawGameOver(){
+    drawBackground();
     SDL_Rect r;
     SDL_QueryTexture(gameOverText , NULL, NULL, &r.w, &r.h);
     blit(gameOverText,SCREEN_WIDTH/2 - r.w/2 , SCREEN_HEIGHT/2 - r.h/2);
+    drawYesNo();
+    drawMouse();
+    doYesNo();
 }
 void initBackGround(){
     background = loadTexture((char*)"gfx/background.jpg");
@@ -200,12 +218,14 @@ static void doHome(){
         }
     }
 }
+
 static void logic()
 {
     doPause();
     doHome();
     doStarfield();
 	doPlayer();
+    doShield();
 	doEnemies();
 	//doAiForEnemy();
 	doFighters();
@@ -215,6 +235,7 @@ static void logic()
 	doPoints();
 	spawnMeteorite();
 	doMeteorites();
+	spawnShield();
 	if(stage.defeat < 2)
 	{
 	    spawnEnemies();
@@ -229,7 +250,7 @@ static void logic()
 	}
 	clipPlayer();
 
-	if(player == NULL  && --stageResetTimer <= 0){
+	if(player == NULL ){
         app.gameover = 1;
 	}
 }
@@ -280,8 +301,11 @@ static void doMeteorites(){
     for(m = stage.meteoHead.next ; m!= NULL; m = m->next){
         if (player != NULL && collision(m->x,m->y,m->w,m->h,player->x,player->y,player->w,player->h)){
             m->health -- ;
-            player->health --;
+            if(player->shield)player->shield = false;
+            else {
+                    player->health --;
             playSound(SND_PLAYER_DIE,CH_ANY);
+            }
             addExplosions(m->x + m->w/2,m->y + m->h/2,32);
 		}
 		for(Entity *b = stage.bulletHead.next ; b != NULL; b = b->next){
@@ -304,6 +328,51 @@ static void doMeteorites(){
             m = prev;
         }
         prev = m;
+    }
+}
+static void doShield(){
+    Entity *s, *prev;
+    prev = &stage.shieldHead;
+    for(s = stage.shieldHead.next; s != NULL; s= s->next){
+            if (s->x < 0)
+		{
+			s->x = 0;
+			s->dx = -s->dx;
+		}
+
+		if (s->x + s->w > SCREEN_WIDTH)
+		{
+			s->x = SCREEN_WIDTH - s->w;
+			s->dx = -s->dx;
+		}
+
+		if (s->y < 0)
+		{
+			s->y = 0;
+			s->dy = -s->dy;
+		}
+
+		if (s->y + s->h > SCREEN_HEIGHT)
+		{
+			s->y = SCREEN_HEIGHT - s->h;
+			s->dy = -s->dy;
+		}
+		if(player != NULL && collision(s->x, s->y, s->w, s->h, player->x, player->y, player->w, player->h)){
+            s->health = 0;
+            player->shield = true;
+		}
+        s->x += s->dx;
+        s->y += s->dy;
+        if(--s->health <= 0)
+        {
+            if(s == stage.shieldTail){
+                stage.shieldTail = prev;
+            }
+            prev->next = s->next;
+            free(s);
+            s = prev;
+        }
+        prev = s;
     }
 }
 static void bossfireBullet(Entity *e){
@@ -387,14 +456,6 @@ static void doFighters()
             if(e->x <= SCREEN_WIDTH - e->w){
                 e->dx = 0;
             }
-
-            if(e->health <= 0) {
-                    addBigDebris(e);
-                    //die(e);
-                    stage.score += 100;
-                    highscore = MAX(highscore, stage.score);
-                    app.win = 1;
-            }
         }
 
 
@@ -406,6 +467,14 @@ static void doFighters()
 			if (e == player)
 			{
 				player = NULL;
+			}
+			if(e->side == SIDE_BOSS){
+                addBigDebris(e);
+                die(e);
+                BossAppear = 0;
+                stage.score += 100;
+                highscore = MAX(highscore, stage.score);
+                app.win = 1;
 			}
 
 			if (e == stage.fighterTail)
@@ -815,6 +884,9 @@ static bool bulletHitFighter(Entity *b)
         addExplosions(b->x,b->y,32);
         else addExplosions(b->x, b->y, 8);
         b->health-- ;
+        if(e->shield){
+            e->shield = false;
+	    }else
         e->health--;
         if (e == player)
 	{
@@ -862,6 +934,26 @@ static void spawnEnemies()
 		enemy->health = 1;
 		enemy->reload = FPS * (1 + (rand() % 3));
 	}
+}
+static void spawnShield(){
+    Entity *s;
+
+    if(--shieldSpawnTimer <= 0 && !player->shield)
+    {
+        s = (Entity*)malloc(sizeof(Entity));
+        memset(s,0, sizeof(Entity));
+        stage.shieldTail->next = s;
+        stage.shieldTail = s;
+
+        s->x = SCREEN_WIDTH;
+        s->y = rand()%SCREEN_HEIGHT;
+        s->texture = shieldTexure;
+        SDL_QueryTexture(s->texture, NULL, NULL, &s->w, &s->h);
+        s->dx = -2;
+        s->dy = rand()%5 - rand()%5;
+        s->health = 5*FPS;
+        shieldSpawnTimer = 10*FPS;
+    }
 }
 static void spawnBoss(){
     if(bossSpawnTimes-- > 0)
@@ -940,6 +1032,12 @@ void drawBackground()
     SDL_RenderCopy(app.renderer,background,NULL,&dest);
 
 }
+void drawShield(){
+    for(Entity *s = stage.shieldHead.next; s != NULL; s = s->next){
+        if (s->health > (FPS *2) || s->health % 12 < 6)
+        blit(s->texture, s->x ,s->y);
+    }
+}
 void drawMeteorite(){
     for(Entity* m = stage.meteoHead.next; m != NULL ; m = m->next){
         blit(m->texture, m->x, m->y);
@@ -986,24 +1084,6 @@ static void drawExplosions()
 
     SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_NONE);
 }
-static void drawBigExplosions()
-{
-	Explosion *e;
-
-	SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_ADD);
-	SDL_SetTextureBlendMode(bigExplosionTexture, SDL_BLENDMODE_ADD);
-
-	for (e = stage.explosionHead.next ; e != NULL ; e = e->next)
-	{
-		SDL_SetTextureColorMod(bigExplosionTexture, e->r, e->g, e->b);
-        SDL_SetTextureAlphaMod(bigExplosionTexture, e->a);
-
-		blit(bigExplosionTexture, e->x, e->y);
-	}
-
-    SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_NONE);
-}
-
 static void drawFighters()
 {
 	Entity *e;
@@ -1014,6 +1094,9 @@ static void drawFighters()
             blit(e->_texture,e->x,e->y);
 	    }else{
 	    blit(e->texture, e->x, e->y);
+	    }
+	    if(e->shield){
+            blit(coverplayer,e->x-10,e->y-5);
 	    }
 }}
 static void drawBullets()
@@ -1088,7 +1171,7 @@ static void draw()
 
 	drawStarfield();
 
-    if(boss != NULL && BossAppear && boss->health > 0)
+    if(boss != NULL && BossAppear)
 	drawBossBar();
 
 	drawPoints();
@@ -1103,9 +1186,8 @@ static void draw()
 
 	drawMeteorite();
 
-	if(app.win){
-        drawBigExplosions();
-	}
+	drawShield();
+
 	drawHud();
 
 	drawHeart();

@@ -12,15 +12,10 @@ int main(int argc, char *argv[])
     initTitle();
 
 	while (1)
-	{
-        SDL_ShowCursor(0);
-	    if(app.gameover){
-            SDL_RenderClear(app.renderer);
-        	drawBackground();
+    {
+	    if(app.gameover && --gameoverTimer <= 0)
+        {
         	drawGameOver();
-        	drawYesNo();
-        	drawMouse();
-        	doYesNo();
             if(app.again){
                 app.gameover = 0;
                 resetStage();
