@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
 	while (1)
     {
-	    if(app.gameover && --gameoverTimer <= 0)
+	    if(app.gameover )
         {
         	drawGameOver();
             if(app.again){

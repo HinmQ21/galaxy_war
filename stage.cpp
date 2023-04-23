@@ -240,7 +240,7 @@ static void logic()
 	{
 	    spawnEnemies();
 	}else{
-	    //spawnEnemies();
+	    spawnEnemies();
 	    if(bossSpawnTimes > 0)
 	    {
         BossAppear = true;
@@ -360,6 +360,7 @@ static void doShield(){
 		if(player != NULL && collision(s->x, s->y, s->w, s->h, player->x, player->y, player->w, player->h)){
             s->health = 0;
             player->shield = true;
+            playSound(SND_POINTS,CH_POINTS);
 		}
         s->x += s->dx;
         s->y += s->dy;
@@ -469,6 +470,7 @@ static void doFighters()
 				player = NULL;
 			}
 			if(e->side == SIDE_BOSS){
+                boss = NULL;
                 addBigDebris(e);
                 die(e);
                 BossAppear = 0;
@@ -647,18 +649,10 @@ static void addExplosions(int x, int y, int num)
 				e->r = 255;  //Orange
 				e->g = 128;
 				break;
-
-//			case 2:
-//				e->b = 255;  // cyan
-//				e->g = 255;
-//				break;
             case 2:
                 e->r = 255;   // yellow
                 e->g = 255;
                 break;
-//            case 4 :
-//                e->g = 128;  //green
-
 			default:
 				e->r = 255;    //white
 				e->g = 255;
@@ -938,7 +932,7 @@ static void spawnEnemies()
 static void spawnShield(){
     Entity *s;
 
-    if(--shieldSpawnTimer <= 0 && !player->shield)
+    if(--shieldSpawnTimer <= 0 && !player->shield && player != NULL)
     {
         s = (Entity*)malloc(sizeof(Entity));
         memset(s,0, sizeof(Entity));
@@ -991,7 +985,7 @@ static void spawnMeteorite(){
         meteo->dy = 4;
         meteo->side = SIDE_METEO;
         meteo->health = 1;
-        meteoriteSpawnTimer = 2*FPS + rand()% (3*FPS);
+        meteoriteSpawnTimer = 3*FPS + rand()% (3*FPS);
     }
 }
 
@@ -1148,6 +1142,8 @@ static void drawPoints()
 	}
 }
 static void drawBossBar(){
+    if(boss != NULL && BossAppear)
+    {
     drawText(100, SCREEN_HEIGHT - GLYPH_HEIGHT , 255, 255, 255, TEXT_LEFT, "BOSS:");
 
     SDL_Rect r;
@@ -1160,6 +1156,7 @@ static void drawBossBar(){
 
     SDL_SetRenderDrawColor(app.renderer, 255,255,255,0);
     SDL_RenderDrawRect(app.renderer, &r);
+    }
 }
 void drawMouse(){
 	blitM(targetTexture,app.mouse.x,app.mouse.y,1);
@@ -1171,7 +1168,6 @@ static void draw()
 
 	drawStarfield();
 
-    if(boss != NULL && BossAppear)
 	drawBossBar();
 
 	drawPoints();

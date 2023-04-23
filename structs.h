@@ -43,7 +43,6 @@ typedef struct {
     bool gameover = false;
     bool again = false;
     bool win = false;
-    bool playmusic = true;
     int keyboard[MAX_KEYBOARD_KEYS];
 } App;
 struct Entity {

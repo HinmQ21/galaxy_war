@@ -7,11 +7,11 @@ void initSDL() {
     windowFlags = 0;
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("Couldn't initialize SDL: %s\n", SDL_GetError());
+        std::cout << "Couldn't initialize SDL: " << SDL_GetError() << std::endl;
         exit(1);
     }
 
-    app.window = SDL_CreateWindow("Shooter", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+    app.window = SDL_CreateWindow("Galaxy War", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                   SCREEN_WIDTH, SCREEN_HEIGHT, windowFlags);
 
     app.renderer = SDL_CreateRenderer(app.window, -1, rendererFlags);
@@ -19,7 +19,7 @@ void initSDL() {
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0)
 	{
-		printf("Couldn't initialize SDL Mixer\n");
+		std::cout << "Couldn't initialize SDL Mixer\n";
 		exit(1);
 	}
     SDL_ShowCursor(0);

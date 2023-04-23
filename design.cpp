@@ -11,8 +11,6 @@ void drawHelpScreen();
 void doHelp();
 void doBack();
 
-static SDL_Texture* sdl2Texture;
-static SDL_Texture* shooterTexture;
 static SDL_Texture* logoTexture;
 static SDL_Texture* UETlogoTexture;
 static SDL_Texture* startbut1;
@@ -50,8 +48,6 @@ void initTitle()
 	memset(app.keyboard, 0, sizeof(int) * MAX_KEYBOARD_KEYS);
     SDL_GetMouseState(&app.mouse.x , &app.mouse.y);
     initMouse();
-	sdl2Texture = loadTexture("gfx/sdl2.png");
-	shooterTexture = loadTexture("gfx/shooter.png");
 	logoTexture = loadTexture("gfx/warplane.png");
 	UETlogoTexture = loadTexture("gfx/UET.png");
 	startbut1 = loadTexture("gfx/play.png");
@@ -295,15 +291,7 @@ static void drawLogo()
 
 	SDL_QueryTexture(logoTexture, NULL, NULL, &r.w, &r.h);
 	r.h = MIN(reveal, r.h);
-	blitRect(logoTexture, &r, (SCREEN_WIDTH / 2) - (r.w / 2), 5);
-
-	SDL_QueryTexture(sdl2Texture, NULL, NULL, &r.w, &r.h);
-	r.h = MIN(reveal, r.h);
-	blitRect(sdl2Texture, &r, (SCREEN_WIDTH / 2) - (r.w / 2), 150);
-
-	SDL_QueryTexture(shooterTexture, NULL, NULL, &r.w, &r.h);
-	r.h = MIN(reveal, r.h);
-	blitRect(shooterTexture, &r, (SCREEN_WIDTH / 2) - (r.w / 2), 300);
+	blitRect(logoTexture, &r, (SCREEN_WIDTH / 2) - (r.w / 2), 50);
 
 	SDL_QueryTexture(startbut1, NULL, NULL, &r.w, &r.h);
 	r.h = MIN(reveal, r.h);
