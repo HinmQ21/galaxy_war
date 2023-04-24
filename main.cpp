@@ -9,8 +9,14 @@ int main(int argc, char *argv[])
     {
 	    if(app.gameover)
         {
+            if(gameoverTimer > 0){
+                app.delegate.logic();
+                app.delegate.draw();
+            }
             if(--gameoverTimer <= 0)
-        	drawGameOver();
+        	{
+        	    drawGameOver();
+        	}
             doInput();
             if(app.again){
                 resetStage();
