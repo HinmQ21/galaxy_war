@@ -46,7 +46,7 @@ void initTitle()
 	app.delegate.draw = draw;
 
 	memset(app.keyboard, 0, sizeof(int) * MAX_KEYBOARD_KEYS);
-    SDL_GetMouseState(&app.mouse.x , &app.mouse.y);
+
     initMouse();
 	logoTexture = loadTexture("gfx/warplane.png");
 	UETlogoTexture = loadTexture("gfx/UET.png");
@@ -98,7 +98,6 @@ static void drawHelpButton(){
 
 static void logic()
 {
-    SDL_GetMouseState(&app.mouse.x , &app.mouse.y);
     doStarfield();
 
 	if (reveal < SCREEN_HEIGHT)
@@ -126,7 +125,6 @@ static void logic()
 
 	if (InStartButton() && app.mouse.button[SDL_BUTTON_LEFT])
 	{
-	    app.start = 1;
 		initStage();
 	}}
 }

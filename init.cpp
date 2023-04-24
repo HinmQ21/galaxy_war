@@ -33,6 +33,13 @@ void initGame(){
     initSounds();
     initMusic();
 }
+void initAll(){
+    initSDL();
+
+	initGame();
+
+    initTitle();
+}
 void cleanup() {
     SDL_DestroyRenderer(app.renderer);
 

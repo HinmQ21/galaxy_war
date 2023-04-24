@@ -3,41 +3,35 @@
 
 int main(int argc, char *argv[])
 {
-    srand(time(NULL));
-
-	initSDL();
-
-	initGame();
-
-    initTitle();
+	initAll();
 
 	while (1)
     {
-	    if(app.gameover )
+	    if(app.gameover)
         {
+            if(--gameoverTimer <= 0)
         	drawGameOver();
+            doInput();
             if(app.again){
-                app.gameover = 0;
                 resetStage();
-                app.again=0;
             }
-		}
-
+        }
+        else {
 		doInput();
 
-        if(!app.pause && !app.gameover){
-		app.delegate.logic();
-		app.delegate.draw();
-        }else if(app.pause && app.start){
+        if(!app.pause){
+            app.delegate.logic();
+            app.delegate.draw();
+        }else {
             app.delegate.draw();
             drawContinue();
             drawQuit();
             drawMouse();
             doQuit();
             doContinue();
+            }
         }
 		SDL_RenderPresent(app.renderer);
-
         SDL_Delay(18);
 	}
 	return 0;

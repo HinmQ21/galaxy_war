@@ -39,10 +39,8 @@ typedef struct {
     Delegate delegate;
     Mouse mouse;
     bool pause = false;
-    bool start = false;
     bool gameover = false;
     bool again = false;
-    bool win = false;
     int keyboard[MAX_KEYBOARD_KEYS];
 } App;
 struct Entity {

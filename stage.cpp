@@ -71,8 +71,6 @@ void initStage()
 	app.delegate.logic = logic;
 	app.delegate.draw = draw;
 
-    stage.explosionTail = &stage.explosionHead;
-	stage.debrisTail = &stage.debrisHead;
 	pointsTexture = loadTexture("gfx/points.png");
 	heart = loadTexture((char*)"gfx/heart.png");
     alienBulletTexture = loadTexture((char*)"gfx/alienBullet.png");
@@ -160,7 +158,10 @@ void resetStage()
 
     stage.score = 0;
     stage.defeat = 0;
-    app.win = false;
+
+    app.again=0;
+    app.gameover = 0;
+
 }
 void initMouse(){
     targetTexture = loadTexture((char*)"gfx/target.png");
@@ -206,17 +207,15 @@ static void initPlayer()
 	player->health = PLAYER_HEALTH;
 }
 static void doPause(){
-    if(app.start)
     if(InPauseButton() && app.mouse.button[SDL_BUTTON_LEFT]){
         app.pause = 1;
     }else app.pause = 0;
 }
 static void doHome(){
-    if(app.start){
         if(InHomeButton() && app.mouse.button[SDL_BUTTON_LEFT]){
             initTitle();
         }
-    }
+
 }
 
 static void logic()
@@ -240,7 +239,7 @@ static void logic()
 	{
 	    spawnEnemies();
 	}else{
-	    spawnEnemies();
+	    //spawnEnemies();
 	    if(bossSpawnTimes > 0)
 	    {
         BossAppear = true;
@@ -476,7 +475,6 @@ static void doFighters()
                 BossAppear = 0;
                 stage.score += 100;
                 highscore = MAX(highscore, stage.score);
-                app.win = 1;
 			}
 
 			if (e == stage.fighterTail)
@@ -1159,6 +1157,7 @@ static void drawBossBar(){
     }
 }
 void drawMouse(){
+    SDL_GetMouseState(&app.mouse.x, &app.mouse.y);
 	blitM(targetTexture,app.mouse.x,app.mouse.y,1);
 }
 
