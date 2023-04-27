@@ -12,7 +12,6 @@ void doHelp();
 void doBack();
 
 static SDL_Texture* logoTexture;
-static SDL_Texture* UETlogoTexture;
 static SDL_Texture* startbut1;
 static SDL_Texture* startbut2;
 static SDL_Texture* exitbut1;
@@ -49,7 +48,6 @@ void initTitle()
 
     initMouse();
 	logoTexture = loadTexture("gfx/warplane.png");
-	UETlogoTexture = loadTexture("gfx/UET.png");
 	startbut1 = loadTexture("gfx/play.png");
 	startbut2 = loadTexture("gfx/colored_play.png");
 	exitbut1 = loadTexture("gfx/exit.png");
@@ -282,10 +280,6 @@ static void drawLogo()
 
 	r.x = 0;
 	r.y = 0;
-
-	SDL_QueryTexture(UETlogoTexture, NULL, NULL, &r.w, &r.h);
-	r.h = MIN(reveal, r.h);
-	blitRect(UETlogoTexture, &r, 5, 5);
 
 	SDL_QueryTexture(logoTexture, NULL, NULL, &r.w, &r.h);
 	r.h = MIN(reveal, r.h);

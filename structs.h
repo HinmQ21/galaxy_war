@@ -41,6 +41,7 @@ typedef struct {
     bool pause = false;
     bool gameover = false;
     bool again = false;
+    bool win = false;
     int keyboard[MAX_KEYBOARD_KEYS];
 } App;
 struct Entity {
@@ -65,5 +66,6 @@ typedef struct {
 	Entity meteoHead, *meteoTail;
 	Entity shieldHead, *shieldTail;
 	int score,defeat;
+	int round;
 } Stage;
 

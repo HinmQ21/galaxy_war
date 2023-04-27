@@ -7,6 +7,17 @@ int main(int argc, char *argv[])
 
 	while (1)
     {
+        if(app.win){
+            if(victoryTimer > 0){
+                app.delegate.logic();
+                app.delegate.draw();
+            }
+            if(victoryTimer-- <= 0)
+            drawVictory();
+            doInput();
+            if(app.again) resetStage();
+        }else
+        {
 	    if(app.gameover)
         {
             if(gameoverTimer > 0){
@@ -36,6 +47,7 @@ int main(int argc, char *argv[])
             doQuit();
             doContinue();
             }
+        }
         }
 		SDL_RenderPresent(app.renderer);
         SDL_Delay(18);

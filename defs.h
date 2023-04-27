@@ -17,7 +17,7 @@
 #define SIDE_METEO 3
 
 #define BOSS_BAR_LEN 800
-#define BOSS_MAX_HEALTH 20
+#define BOSS_MAX_HEALTH 40
 
 #define FPS 60
 
