@@ -63,13 +63,16 @@ static SDL_Texture *bigExplosionTexture;
 static SDL_Texture *bossBulletTexture1;
 static SDL_Texture *bossBulletTexture2;
 static SDL_Texture *bossBulletTexture3;
+static SDL_Texture *bossBulletTexture4;
+static SDL_Texture *bossBulletTexture5;
+static SDL_Texture *specialBulletTexute;
 static SDL_Texture *blackHoleTexture;
 static int enemySpawnTimer;
 static int meteoriteSpawnTimer;
 static int bossSpawnTimes;
 static int bossSpawnTimes2;
 static int boss2Spawntimer;
-static int shieldSpawnTimer;
+static int heartSpawnTimer;
 int gameoverTimer;
 int victoryTimer;
 static int nextRoundTimer;
@@ -99,6 +102,9 @@ void initStage()
 	bossBulletTexture1 = loadTexture((char*)"gfx/boss_bullet1.png");
 	bossBulletTexture2 = loadTexture((char*)"gfx/boss_bullet2.png");
     bossBulletTexture3 = loadTexture((char*)"gfx/alienBigBullet.png");
+    bossBulletTexture4 = loadTexture((char*)"gfx/alienBigBullet2.png");
+    specialBulletTexute = loadTexture((char*)"gfx/special_bullet.png");
+    bossBulletTexture5 = loadTexture((char*)"gfx/boss_bullet3.png");
 	meteoriteTexture = loadTexture((char*)"gfx/meteorite.png");
 	meteorite_Texture = loadTexture((char*)"gfx/meteo.png");
 	shieldTexure = loadTexture((char*)"gfx/shieldpod.png");
@@ -153,11 +159,11 @@ void resetStage()
         stage.meteoHead.next = e->next;
         free(e);
     }
-//    while(stage.shieldHead.next){
-//        e = stage.shieldHead.next;
-//        stage.shieldHead.next = e->next;
-//        free(e);
-//    }
+    while(stage.heartHead.next){
+        e = stage.heartHead.next;
+        stage.heartHead.next = e->next;
+        free(e);
+    }
 	memset(&stage, 0, sizeof(Stage));
 	stage.fighterTail = &stage.fighterHead;
 	stage.bulletTail = &stage.bulletHead;
@@ -165,7 +171,7 @@ void resetStage()
 	stage.debrisTail = &stage.debrisHead;
     stage.pointsTail = &stage.pointsHead;
     stage.meteoTail = &stage.meteoHead;
-//    stage.shieldTail = &stage.shieldHead;
+    stage.heartTail = &stage.heartHead;
 	initPlayer();
 	initStarfield();
 
@@ -173,7 +179,7 @@ void resetStage()
     bossSpawnTimes2 = 1;
 	enemySpawnTimer = 0;
 	meteoriteSpawnTimer = 3*FPS;
-	shieldSpawnTimer = 5*FPS;
+    heartSpawnTimer = 10 * FPS;
 	gameoverTimer = FPS * 2;
 	victoryTimer = FPS * 2;
 	nextRoundTimer = FPS * 5;
@@ -314,10 +320,7 @@ static void doMeteorites(){
     for(m = stage.meteoHead.next ; m!= NULL; m = m->next){
         if (player != NULL && collision(m->x,m->y,m->w,m->h,player->x,player->y,player->w,player->h)){
             m->health -- ;
-            if(player->shield)player->shield = false;
-            else {
-                    player->health --;
-            }
+            player->health --;
             playSound(SND_PLAYER_DIE,CH_ANY);
             addExplosions(m->x + m->w/2,m->y + m->h/2,32);
 		}
@@ -343,52 +346,53 @@ static void doMeteorites(){
         prev = m;
     }
 }
-static void doShield(){
-    Entity *s, *prev;
-    prev = &stage.shieldHead;
-    for(s = stage.shieldHead.next; s != NULL; s= s->next){
-            if (s->x < 0)
+static void doHeart(){
+    Entity *h, *prev;
+    prev = &stage.heartHead;
+    for(h = stage.heartHead.next; h != NULL; h = h->next){
+            if (h->x < 0)
 		{
-			s->x = 0;
-			s->dx = -s->dx;
+			h->x = 0;
+			h->dx = -h->dx;
 		}
 
-		if (s->x + s->w > SCREEN_WIDTH)
+		if (h->x + h->w > SCREEN_WIDTH)
 		{
-			s->x = SCREEN_WIDTH - s->w;
-			s->dx = -s->dx;
+			h->x = SCREEN_WIDTH - h->w;
+			h->dx = -h->dx;
 		}
 
-		if (s->y < 0)
+		if (h->y < 0)
 		{
-			s->y = 0;
-			s->dy = -s->dy;
+			h->y = 0;
+			h->dy = -h->dy;
 		}
 
-		if (s->y + s->h > SCREEN_HEIGHT)
+		if (h->y + h->h > SCREEN_HEIGHT)
 		{
-			s->y = SCREEN_HEIGHT - s->h;
-			s->dy = -s->dy;
+			h->y = SCREEN_HEIGHT - h->h;
+			h->dy = -h->dy;
 		}
-		if(player != NULL && collision(s->x, s->y, s->w, s->h, player->x, player->y, player->w, player->h)){
-            s->health = 0;
-            player->shield = true;
+		if(player != NULL && collision(h->x, h->y, h->w, h->h, player->x, player->y, player->w, player->h)){
+            player->health++;
+            h->health = 0;
             playSound(SND_POINTS,CH_POINTS);
 		}
-        s->x += s->dx;
-        s->y += s->dy;
-        if(--s->health <= 0)
+        h->x += h->dx;
+        h->y += h->dy;
+        if(--h->health <= 0)
         {
-            if(s == stage.shieldTail){
-                stage.shieldTail = prev;
+            if(h == stage.heartTail){
+                stage.heartTail = prev;
             }
-            prev->next = s->next;
-            free(s);
-            s = prev;
+            prev->next = h->next;
+            free(h);
+            h = prev;
         }
-        prev = s;
+        prev = h;
     }
 }
+
 static void bossfireBullet(Entity *e){
     Entity *bullet;
     for(int i = 1; i <= 3; i++){
@@ -406,6 +410,46 @@ static void bossfireBullet(Entity *e){
     e->reload = FPS + ( rand() % FPS * 2 );
     }
 }
+static void bossfireBullet2(Entity *e){
+    Entity *bullet;
+    for(int i = 1; i <= 3; i++){
+	bullet = (Entity*)malloc(sizeof(Entity));
+	memset(bullet, 0, sizeof(Entity));
+	stage.bulletTail->next = bullet;
+	stage.bulletTail = bullet;
+	bullet->x = e->x ;
+	bullet->y = e->y + 100*i - 55;
+	bullet->health = 3;
+	bullet->side = SIDE_BOSS;
+	bullet->dx = -ALIEN_BULLET_SPEED*3;
+	bullet->texture = bossBulletTexture4;
+	SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
+    e->reload = FPS + ( rand() % FPS * 2 );
+    }
+}
+static void FireRainBullet(Entity *e){
+    Entity *b;
+    for(int i = 1; i <= 3; i++){
+        b = (Entity*)malloc(sizeof(Entity));
+        memset(b, 0, sizeof(Entity));
+        stage.bulletTail->next = b;
+        stage.bulletTail = b;
+        b->texture = specialBulletTexute;
+        SDL_QueryTexture(b->texture, NULL, NULL, &b->w, &b->h);
+        b->x = e->x;
+        b->y = e->y + e->h/2;
+        b->health = 2;
+        b->side = SIDE_BOSS;
+        e->reload = FPS + ( rand() % FPS * 2 );
+        if(i==1)
+        calcSlope( 0, 0,b->x, b->y,&b->dx, &b->dy);
+        else if(i==2) calcSlope(0, SCREEN_HEIGHT / 2, b->x, b->y,&b->dx, &b->dy);
+        else calcSlope(0, SCREEN_HEIGHT,b->x, b->y,&b->dx, &b->dy);
+        b->dx *= ALIEN_BULLET_SPEED;
+        b->dy *= ALIEN_BULLET_SPEED;
+    }
+}
+
 static void doEnemies()
 {
 	Entity *e;
@@ -414,10 +458,7 @@ static void doEnemies()
 	{
 	    if (player != NULL &&e != player && collision(e->x,e->y,e->w,e->h,player->x,player->y,player->w,player->h)){
             e->health -- ;
-
-            if(player->shield){
-                player->shield = 0;
-            }else player->health --;
+            player->health --;
 
             playSound(SND_PLAYER_DIE,CH_ANY);
             addExplosions(player->x + player->w,player->y,32);
@@ -433,7 +474,11 @@ static void doEnemies()
                         if(rand()%2)
                         {
                             if(stage.round == 1) bossfireBullet(e);
-
+                            else{
+                                if(rand() % 2)
+                                bossfireBullet2(e);
+                            else FireRainBullet(e);
+                            }
                         }
                 else fireAlienBullet(e);
 				}
@@ -813,9 +858,19 @@ static void fireAlienBullet(Entity *e)
         bullet->side = SIDE_ALIEN;
 	}
 	else {
-            if(rand()%2)
+            int r = rand() % 3;
+
+            switch(r){
+            case 0 :
             bullet->texture = bossBulletTexture1;
-            else bullet->texture = bossBulletTexture2;
+            break;
+            case 1 :
+            bullet->texture = bossBulletTexture2;
+            break;
+            case 2 :
+            bullet->texture = bossBulletTexture5;
+            }
+
             bullet->side = SIDE_BOSS;
             bullet->health = 3;
 	}
@@ -894,10 +949,7 @@ static bool bulletHitFighter(Entity *b)
         addExplosions(b->x,b->y,32);
         else addExplosions(b->x, b->y, 8);
         b->health-- ;
-        if(e->shield){
-            e->shield = false;
-	    }else
-        e->health--;
+        e->health-- ;
         if (e == player)
 	{
 		playSound(SND_PLAYER_DIE, CH_PLAYER);
@@ -952,24 +1004,23 @@ static void spawnEnemies()
 		enemy->reload = FPS * (1 + (rand() % 3));
 	}
 }
-static void spawnShield(){
-    Entity *s;
 
-    if(--shieldSpawnTimer <= 0 && !player->shield && player != NULL)
-    {
-        s = (Entity*)malloc(sizeof(Entity));
-        memset(s,0, sizeof(Entity));
-        stage.shieldTail->next = s;
-        stage.shieldTail = s;
+static spawnHeart(){
+    Entity *h;
+    if(--heartSpawnTimer <= 0){
+        h = (Entity*)malloc(sizeof(Entity));
+        memset(h, 0, sizeof(Entity));
+        stage.heartTail->next = h;
+        stage.heartTail = h;
 
-        s->x = SCREEN_WIDTH;
-        s->y = rand()%SCREEN_HEIGHT;
-        s->texture = shieldTexure;
-        SDL_QueryTexture(s->texture, NULL, NULL, &s->w, &s->h);
-        s->dx = -2;
-        s->dy = rand()%5 - rand()%5;
-        s->health = 5*FPS;
-        shieldSpawnTimer = 10*FPS;
+        h->x = SCREEN_WIDTH;
+        h->y = rand() % SCREEN_HEIGHT;
+        h->dx = -4;
+        h->dy = -5 + rand() % 11;
+        h->texture = heart;
+        SDL_QueryTexture(heart, NULL, NULL, &h->w, &h->h);
+        h->health = 5 * FPS;
+        heartSpawnTimer = 10 * FPS;
     }
 }
 static void spawnBoss(){
@@ -1027,7 +1078,7 @@ static void spawnMeteorite(){
         meteo->dx = -3;
         meteo->dy = 4;
         meteo->side = SIDE_METEO;
-        meteo->health = 1;
+        meteo->health = 2;
         meteoriteSpawnTimer = 3*FPS + rand()% (3*FPS);
     }
 }
@@ -1069,16 +1120,24 @@ void drawBackground()
     SDL_RenderCopy(app.renderer,background,NULL,&dest);
 
 }
-void drawShield(){
-    for(Entity *s = stage.shieldHead.next; s != NULL; s = s->next){
-        if (s->health > (FPS *2) || s->health % 12 < 6)
-        blit(s->texture, s->x ,s->y);
-    }
-}
+
 void drawMeteorite(){
     for(Entity* m = stage.meteoHead.next; m != NULL ; m = m->next){
         blit(m->texture, m->x, m->y);
     }
+}
+
+static void drawPoints()
+{
+	Entity* e;
+
+	for (e = stage.pointsHead.next; e != NULL; e = e->next)
+	{
+		if (e->health > (FPS *2) || e->health % 12 < 6)
+		{
+			blit(e->texture, e->x, e->y);
+		}
+	}
 }
 void drawStarfield()
 {
@@ -1133,9 +1192,7 @@ static void drawFighters()
 	    }else{
 	    blit(e->texture, e->x, e->y);
 	    }
-	    if(e->shield){
-            blit(coverplayer,e->x-10,e->y-5);
-	    }
+
 }}
 static void drawBullets()
 {
@@ -1160,30 +1217,25 @@ static void drawHud()
 		drawText(960, 10, 255, 255, 255, 2,"HIGH SCORE: %03d", highscore);
 	}
 }
-static void drawHeart(){
+static void drawLives(){
     SDL_Rect rect;
 
     SDL_QueryTexture(heart,NULL,NULL,&rect.w,&rect.h);
     if(player != NULL){
-    if(player->health == PLAYER_HEALTH){
-        blit(heart,SCREEN_WIDTH/2-rect.w,0);
-        blit(heart,SCREEN_WIDTH/2 + 10,0);
-    }else {
-        blit(heart,SCREEN_WIDTH/2-rect.w,0);
-    }}
+    blit(heart,SCREEN_WIDTH/2-rect.w,0);
+    drawText(SCREEN_WIDTH/2 + rect.w,10, 255, 0, 0, 2, "X %d", player->health);
+    }
 
 }
-static void drawPoints()
-{
-	Entity *e;
 
-	for (e = stage.pointsHead.next ; e != NULL ; e = e->next)
-	{
-		if (e->health > (FPS *2) || e->health % 12 < 6)
-		{
-			blit(e->texture, e->x, e->y);
-		}
-	}
+static void drawHeart(){
+    Entity *h;
+
+    for( h = stage.heartHead.next ; h != NULL; h = h->next){
+        if(h->health > (FPS * 2) || h->health % 12 < 6){
+            blit(h->texture, h->x, h->y);
+        }
+    }
 }
 static void drawBossBar(){
     if(boss != NULL)
@@ -1245,8 +1297,8 @@ static void logic()
 	doMeteorites();
 
     if(BossDefeated && --nextRoundTimer < 0) doBlackHole();
-//	spawnShield();
-//    doShield();
+    spawnHeart();
+    doHeart();
 	if(stage.defeat < 2)
 	{
 	    spawnEnemies();
@@ -1294,11 +1346,11 @@ static void draw()
 
 	drawMeteorite();
 
-//	drawShield();
+    drawHeart();
 
 	drawHud();
 
-	drawHeart();
+	drawLives();
 
 	drawPause();
 

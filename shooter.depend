@@ -18,9 +18,9 @@
 	"defs.h"
 	"structs.h"
 
-1682590986 c:\users\admin\onedrive\documents\shooter\defs.h
+1682612070 c:\users\admin\onedrive\documents\shooter\defs.h
 
-1682522597 c:\users\admin\onedrive\documents\shooter\structs.h
+1682651777 c:\users\admin\onedrive\documents\shooter\structs.h
 
 1682005112 source:c:\users\admin\onedrive\documents\shooter\input.cpp
 	"input.h"
@@ -37,7 +37,7 @@
 1682527231 c:\users\admin\onedrive\documents\shooter\main.h
 	"common.h"
 
-1682590911 source:c:\users\admin\onedrive\documents\shooter\stage.cpp
+1682698641 source:c:\users\admin\onedrive\documents\shooter\stage.cpp
 	"stage.h"
 
 1682042446 c:\users\admin\onedrive\documents\shooter\stage.h

@@ -51,7 +51,6 @@ struct Entity {
 	int health;
 	int reload;
     int side;
-    bool shield = false;
 	SDL_Texture *texture;
 	SDL_Texture *_texture;
 	Entity *next;
@@ -64,7 +63,7 @@ typedef struct {
 	Debris debrisHead, *debrisTail;
 	Entity pointsHead, *pointsTail;
 	Entity meteoHead, *meteoTail;
-	Entity shieldHead, *shieldTail;
+	Entity heartHead, *heartTail;
 	int score,defeat;
 	int round;
 } Stage;
