@@ -6,3 +6,8 @@
 
 - About
 <img src="https://i.imgur.com/133R51y.jpg">
+
+- In game
+<img src="https://i.imgur.com/tlNCkax.jpeg">
+
+<img src = "https://i.imgur.com/ezzby3h.jpg">
