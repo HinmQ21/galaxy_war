@@ -193,10 +193,11 @@ void resetStage()
 
     app.again=0;
     app.gameover = 0;
+    app.pause = false;
 
     background = allBackground[0];
 
-    boss2Spawntimer = 3 * FPS;
+    boss2Spawntimer = 10 * FPS;
 
     boss = NULL;
 
@@ -271,6 +272,7 @@ static void doPause(){
 static void doHome(){
         if(InHomeButton() && app.mouse.button[SDL_BUTTON_LEFT]){
             initTitle();
+            resetStage();
         }
 
 }
@@ -1286,11 +1288,19 @@ void doBlackHole(){
         stage.round = 2;
     }
 }
+void viewPauseStage(){
+    drawContinue();
+    drawQuit();
+    drawHome();
+    doQuit();
+    doContinue();
+    doHome();
+    drawMouse();
+}
 
 static void logic()
 {
     doPause();
-    doHome();
     doStarfield();
 	doPlayer();
 	doEnemies();
@@ -1305,11 +1315,10 @@ static void logic()
     if(BossDefeated && --nextRoundTimer < 0) doBlackHole();
     spawnHeart();
     doHeart();
-	if(stage.defeat < 2)
+	if(stage.defeat < 20)
 	{
 	    spawnEnemies();
 	}else{
-	    //spawnEnemies();
 	    if(bossSpawnTimes > 0)
 	    {
         spawnBoss();
@@ -1319,7 +1328,10 @@ static void logic()
                 background = allBackground[1];
                 if(--boss2Spawntimer > 0)
                 spawnEnemies();
-                else spawnBoss2();
+                else {
+                        spawnBoss2();
+                        spawnEnemies();
+                }
         }
 
 	}
@@ -1359,8 +1371,6 @@ static void draw()
 	drawLives();
 
 	drawPause();
-
-	drawHome();
 
 	drawMouse();
 

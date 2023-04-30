@@ -41,11 +41,7 @@ int main(int argc, char *argv[])
             app.delegate.draw();
         }else {
             app.delegate.draw();
-            drawContinue();
-            drawQuit();
-            drawMouse();
-            doQuit();
-            doContinue();
+            viewPauseStage();
             }
         }
         }

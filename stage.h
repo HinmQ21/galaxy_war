@@ -16,6 +16,11 @@ extern void initTitle();
 extern bool InPauseButton();
 extern bool InHomeButton();
 extern void doMusic();
+extern void drawQuit();
+extern void doQuit();
+extern void drawContinue();
+extern void doContinue();
+
 
 extern App app;
 extern Stage stage;

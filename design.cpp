@@ -141,19 +141,31 @@ static void draw()
 
     drawMouse();
 }
+bool InHomeButton(){
+    SDL_Rect r;
+    SDL_QueryTexture(homebut1, NULL, NULL, &r.w, &r.h);
+    return collision(app.mouse.x - MOUSE_HEIGHT/2,app.mouse.y - MOUSE_WIDTH/2,MOUSE_WIDTH,MOUSE_HEIGHT,SCREEN_WIDTH/2 - r.w/2 , SCREEN_HEIGHT/2 - r.h/2 - 180 , r.w , r.h );
+}
+void drawHome(){
+    SDL_Rect r;
+    SDL_QueryTexture(homebut1, NULL, NULL, &r.w, &r.h);
+    if(InHomeButton()){
+        blit(homebut2,SCREEN_WIDTH/2 - r.w/2 , SCREEN_HEIGHT/2 - r.h/2 - 180);
+    }else blit(homebut1,SCREEN_WIDTH/2 - r.w/2 , SCREEN_HEIGHT/2 - r.h/2 - 180);
+}
 
 static bool InContinueButton(){
     SDL_Rect r;
     SDL_QueryTexture(contibut1, NULL, NULL, &r.w, &r.h);
-    return collision(app.mouse.x - MOUSE_HEIGHT/2,app.mouse.y - MOUSE_WIDTH/2,MOUSE_WIDTH,MOUSE_HEIGHT,(SCREEN_WIDTH / 2) - (r.w / 2), SCREEN_HEIGHT/2 - (r.h)/2 - 100, r.w , r.h );
+    return collision(app.mouse.x - MOUSE_HEIGHT/2,app.mouse.y - MOUSE_WIDTH/2,MOUSE_WIDTH,MOUSE_HEIGHT,(SCREEN_WIDTH / 2) - (r.w / 2), SCREEN_HEIGHT/2 - (r.h)/2 - 50, r.w , r.h );
 }
 void drawContinue(){
 
     SDL_Rect r;
     SDL_QueryTexture(contibut1, NULL, NULL, &r.w, &r.h);
     if(InContinueButton()){
-        blit(contibut2,(SCREEN_WIDTH / 2) - (r.w / 2), SCREEN_HEIGHT/2 - (r.h)/2 - 100);
-    }else blit(contibut1,(SCREEN_WIDTH / 2) - (r.w / 2), SCREEN_HEIGHT/2 - (r.h)/2 - 100);
+        blit(contibut2,(SCREEN_WIDTH / 2) - (r.w / 2), SCREEN_HEIGHT/2 - (r.h)/2 - 50);
+    }else blit(contibut1,(SCREEN_WIDTH / 2) - (r.w / 2), SCREEN_HEIGHT/2 - (r.h)/2 - 50);
 }
 void doContinue(){
     if(InContinueButton() && app.mouse.button[SDL_BUTTON_LEFT]){
@@ -197,6 +209,7 @@ void drawHelpScreen(){
 
     drawInstruction();
 }
+
 bool InQuitButton(){
     SDL_Rect r;
     SDL_QueryTexture(quitbut1, NULL, NULL, &r.w, &r.h);
@@ -226,18 +239,7 @@ void drawPause(){
         blit(pausebut2,SCREEN_WIDTH - r.w - 10, 10);
     }else blit(pausebut1,SCREEN_WIDTH - r.w - 10, 10);
 }
-bool InHomeButton(){
-    SDL_Rect r;
-    SDL_QueryTexture(homebut1, NULL, NULL, &r.w, &r.h);
-    return collision(app.mouse.x - MOUSE_HEIGHT/2,app.mouse.y - MOUSE_WIDTH/2,MOUSE_WIDTH,MOUSE_HEIGHT,SCREEN_WIDTH - r.w - 120 , 10, r.w , r.h );
-}
-void drawHome(){
-    SDL_Rect r;
-    SDL_QueryTexture(homebut1, NULL, NULL, &r.w, &r.h);
-    if(InHomeButton()){
-        blit(homebut2,SCREEN_WIDTH - r.w - 120 , 10);
-    }else blit(homebut1,SCREEN_WIDTH - r.w - 120, 10);
-}
+
 bool InYesButton(){
     SDL_Rect r;
     SDL_QueryTexture(yesbut1, NULL, NULL, &r.w, &r.h);
