@@ -17,13 +17,13 @@
 #define SIDE_METEO 3
 
 #define BOSS_BAR_LEN 800
-#define BOSS_MAX_HEALTH 20
+#define BOSS_MAX_HEALTH 40
 
 #define FPS 60
 
 #define MAX_STARS   500
 
-#define PLAYER_HEALTH 20
+#define PLAYER_HEALTH 2
 
 #define MAX_SND_CHANNELS 8
 

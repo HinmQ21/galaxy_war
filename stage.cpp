@@ -172,6 +172,7 @@ void resetStage()
     stage.pointsTail = &stage.pointsHead;
     stage.meteoTail = &stage.meteoHead;
     stage.heartTail = &stage.heartHead;
+
 	initPlayer();
 	initStarfield();
 
@@ -248,7 +249,7 @@ void initBackGround(){
 }
 static void initPlayer()
 {
-	player =(Entity*) malloc(sizeof(Entity));
+    player = new Entity();
 	memset(player, 0, sizeof(Entity));
 	stage.fighterTail->next = player;
 	stage.fighterTail = player;
@@ -396,7 +397,7 @@ static void doHeart(){
 static void bossfireBullet(Entity *e){
     Entity *bullet;
     for(int i = 1; i <= 3; i++){
-	bullet = (Entity*)malloc(sizeof(Entity));
+    bullet = new Entity();
 	memset(bullet, 0, sizeof(Entity));
 	stage.bulletTail->next = bullet;
 	stage.bulletTail = bullet;
@@ -413,7 +414,7 @@ static void bossfireBullet(Entity *e){
 static void bossfireBullet2(Entity *e){
     Entity *bullet;
     for(int i = 1; i <= 3; i++){
-	bullet = (Entity*)malloc(sizeof(Entity));
+    bullet = new Entity();
 	memset(bullet, 0, sizeof(Entity));
 	stage.bulletTail->next = bullet;
 	stage.bulletTail = bullet;
@@ -429,8 +430,8 @@ static void bossfireBullet2(Entity *e){
 }
 static void FireRainBullet(Entity *e){
     Entity *b;
-    for(int i = 1; i <= 3; i++){
-        b = (Entity*)malloc(sizeof(Entity));
+    for(int i = 1; i <= 5; i++){
+        b = new Entity ();
         memset(b, 0, sizeof(Entity));
         stage.bulletTail->next = b;
         stage.bulletTail = b;
@@ -441,10 +442,14 @@ static void FireRainBullet(Entity *e){
         b->health = 2;
         b->side = SIDE_BOSS;
         e->reload = FPS + ( rand() % FPS * 2 );
+
         if(i==1)
         calcSlope( 0, 0,b->x, b->y,&b->dx, &b->dy);
-        else if(i==2) calcSlope(0, SCREEN_HEIGHT / 2, b->x, b->y,&b->dx, &b->dy);
-        else calcSlope(0, SCREEN_HEIGHT,b->x, b->y,&b->dx, &b->dy);
+        else if(i==2) calcSlope(0, SCREEN_HEIGHT / 4, b->x, b->y,&b->dx, &b->dy);
+        else if(i==3)calcSlope(0, SCREEN_HEIGHT / 2,b->x, b->y,&b->dx, &b->dy);
+        else if(i==4)calcSlope(0,3 * SCREEN_HEIGHT /4 ,b->x, b->y,&b->dx, &b->dy);
+        else if(i==5)calcSlope(0, SCREEN_HEIGHT,b->x, b->y,&b->dx, &b->dy);
+
         b->dx *= ALIEN_BULLET_SPEED;
         b->dy *= ALIEN_BULLET_SPEED;
     }
@@ -516,7 +521,6 @@ static void doFighters()
 		if (e->health <= 0)
 		{
 		    addExplosions(e->x,e->y,32);
-		    //die(e);
             addDebris(e);
 			if (e == player)
 			{
@@ -680,7 +684,7 @@ static void addExplosions(int x, int y, int num)
 
 	for (int i = 0 ; i < num ; i++)
 	{
-		e = (Explosion*)malloc(sizeof(Explosion));
+        e = new Explosion();
 		memset(e, 0, sizeof(Explosion));
 		stage.explosionTail->next = e;
 		stage.explosionTail = e;
@@ -730,7 +734,7 @@ static void addDebris(Entity *e)
 	{
 		for (x = 0 ; x <= w ; x += w)
 		{
-			d = (Debris*)malloc(sizeof(Debris));
+            d = new Debris ();
 			memset(d, 0, sizeof(Debris));
 			stage.debrisTail->next = d;
 			stage.debrisTail = d;
@@ -764,7 +768,7 @@ static void addBigDebris(Entity *e)
 	{
 		for (x = 0 ; x <= 2*w ; x += w)
 		{
-			d = (Debris*)malloc(sizeof(Debris));
+            d = new Debris();
 			memset(d, 0, sizeof(Debris));
 			stage.debrisTail->next = d;
 			stage.debrisTail = d;
@@ -787,7 +791,7 @@ static void addPoints(int x, int y)
 {
 	Entity *e;
 
-	e =(Entity*) malloc(sizeof(Entity));
+    e = new Entity();
 	memset(e, 0, sizeof(Entity));
 	stage.pointsTail->next = e;
 	stage.pointsTail = e;
@@ -810,7 +814,7 @@ static void fireBullet()
 {
 	Entity *bullet;
 
-	bullet = (Entity*)malloc(sizeof(Entity));
+    bullet = new Entity();
 	memset(bullet, 0, sizeof(Entity));
 	stage.bulletTail->next = bullet;
 	stage.bulletTail = bullet;
@@ -837,7 +841,7 @@ static void fireAlienBullet(Entity *e)
 {
 	Entity *bullet;
 
-	bullet = (Entity*)malloc(sizeof(Entity));
+    bullet = new Entity();
 	memset(bullet, 0, sizeof(Entity));
 	stage.bulletTail->next = bullet;
 	stage.bulletTail = bullet;
@@ -977,7 +981,7 @@ static void spawnEnemies()
 
 	if (--enemySpawnTimer <= 0)
 	{
-		enemy = (Entity*)malloc(sizeof(Entity));
+        enemy = new Entity();
 		memset(enemy, 0, sizeof(Entity));
 		stage.fighterTail->next = enemy;
 		stage.fighterTail = enemy;
@@ -1008,7 +1012,7 @@ static void spawnEnemies()
 static spawnHeart(){
     Entity *h;
     if(--heartSpawnTimer <= 0){
-        h = (Entity*)malloc(sizeof(Entity));
+        h = new Entity();
         memset(h, 0, sizeof(Entity));
         stage.heartTail->next = h;
         stage.heartTail = h;
@@ -1027,7 +1031,7 @@ static void spawnBoss(){
     if(bossSpawnTimes-- > 0)
     {
     Entity *boss;
-    boss = (Entity*)malloc(sizeof(Entity));
+    boss = new Entity();
     memset(boss, 0, sizeof(Entity));
     stage.fighterTail->next = boss;
     stage.fighterTail = boss;
@@ -1046,7 +1050,7 @@ static void spawnBoss2(){
     if(bossSpawnTimes2-- > 0)
     {
         Entity *boss;
-        boss = (Entity*)malloc(sizeof(Entity));
+        boss = new Entity();
         memset(boss, 0, sizeof(Entity));
         stage.fighterTail->next = boss;
         stage.fighterTail = boss;
@@ -1065,7 +1069,7 @@ static void spawnBoss2(){
 static void spawnMeteorite(){
     Entity *meteo;
     if(--meteoriteSpawnTimer < 0){
-        meteo = (Entity*)malloc(sizeof(Entity));
+        meteo = new Entity();
         memset(meteo, 0, sizeof(Entity));
         stage.meteoTail->next = meteo;
         stage.meteoTail = meteo;
@@ -1187,13 +1191,15 @@ static void drawFighters()
 
 	for (e = stage.fighterHead.next ; e != NULL ; e = e->next)
 	{
-	    if(e == player && e->health != PLAYER_HEALTH){
+	    if(e == player && e->health < PLAYER_HEALTH){
             blit(e->_texture,e->x,e->y);
 	    }else{
 	    blit(e->texture, e->x, e->y);
 	    }
 
-}}
+    }
+}
+
 static void drawBullets()
 {
 	Entity *b;
