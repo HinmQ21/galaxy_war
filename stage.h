@@ -7,7 +7,7 @@ extern SDL_Texture *loadTexture(char *filename);
 extern int collision(int x1,int y1, int w1, int h1, int x2, int y2, int w2, int h2);
 extern int calcSlope(int x1,int y1, int x2, int y2, float *dx, float *dy);
 extern void playSound(int id, int channel);
-extern void drawText(int x, int y, int r, int g, int b, int align,char* format, ...);
+extern void drawText(int x, int y, int r, int g, int b, char* format, ...);
 extern void drawPause();
 extern void drawHome();
 extern void drawYesNo();

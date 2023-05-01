@@ -1214,15 +1214,15 @@ static void drawBullets()
 }
 static void drawHud()
 {
-	drawText(10, 10, 255, 255, 255, TEXT_LEFT,"SCORE: %03d", stage.score);
-    drawText(10, 50, 255, 0 ,0 ,TEXT_LEFT ,"DEFEAT: %03d", stage.defeat);
+	drawText(10, 10, 255, 255, 255 ,"SCORE: %03d", stage.score);
+    drawText(10, 50, 255, 0 ,0 ,"DEFEAT: %03d", stage.defeat);
 	if (stage.score > 0 && stage.score == highscore)
 	{
-		drawText(960, 10, 0, 255, 0, 2 ,"HIGH SCORE: %03d", highscore);
+		drawText(900, 10, 0, 255, 0 ,"HIGH SCORE: %03d", highscore);
 	}
 	else
 	{
-		drawText(960, 10, 255, 255, 255, 2,"HIGH SCORE: %03d", highscore);
+		drawText(900, 10, 255, 255, 255 ,"HIGH SCORE: %03d", highscore);
 	}
 }
 static void drawLives(){
@@ -1231,7 +1231,7 @@ static void drawLives(){
     SDL_QueryTexture(heart,NULL,NULL,&rect.w,&rect.h);
     if(player != NULL){
     blit(heart,SCREEN_WIDTH/2-rect.w,0);
-    drawText(SCREEN_WIDTH/2 + rect.w,10, 255, 0, 0, 2, "X %d", player->health);
+    drawText(SCREEN_WIDTH/2 + rect.w / 2,10, 255, 0, 0, "X %d", player->health);
     }
 
 }
@@ -1248,7 +1248,7 @@ static void drawHeart(){
 static void drawBossBar(){
     if(boss != NULL)
     {
-    drawText(100, SCREEN_HEIGHT - GLYPH_HEIGHT , 255, 255, 255, TEXT_LEFT, "BOSS:");
+    drawText(100, SCREEN_HEIGHT - GLYPH_HEIGHT , 255, 255, 255, "BOSS:");
 
     SDL_Rect r;
     r.h = 20;

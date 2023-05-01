@@ -53,9 +53,3 @@ enum
 	SND_MAX
 };
 
-enum
-{
-	TEXT_LEFT,
-	TEXT_RIGHT = 3,
-	TEXT_CENTER = 2
-};
