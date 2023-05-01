@@ -11,3 +11,7 @@
 <img src="https://i.imgur.com/tlNCkax.jpeg">
 
 <img src = "https://i.imgur.com/ezzby3h.jpg">
+
+## 2. Cách mở project
+- Các bạn có thể down file zip về máy rồi giải nén hoặc dùng git clone + đường link của repo, hoặc 
+
