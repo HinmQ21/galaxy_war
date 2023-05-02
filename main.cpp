@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
 
 	while (1)
     {
+        // check win
         if(app.win){
             if(victoryTimer > 0){
                 app.delegate.logic();
@@ -18,6 +19,8 @@ int main(int argc, char *argv[])
             if(app.again) resetStage();
         }else
         {
+
+        //check gameover
 	    if(app.gameover)
         {
             if(gameoverTimer > 0){
@@ -36,6 +39,7 @@ int main(int argc, char *argv[])
         else {
 		doInput();
 
+		// check game pause
         if(!app.pause){
             app.delegate.logic();
             app.delegate.draw();

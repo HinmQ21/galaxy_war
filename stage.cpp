@@ -205,9 +205,13 @@ void resetStage()
     app.gameover = false;
 
 }
+
+//Initialize texture of mouse
 void initMouse(){
     targetTexture = loadTexture((char*)"gfx/target.png");
 }
+
+//Intialize coordinate of stars
 void initStarfield()
 {
 	for (int i = 0 ; i < MAX_STARS ; i++)
@@ -217,9 +221,13 @@ void initStarfield()
 		stars[i].speed = 1 + rand() % 8;
 	}
 }
+
+//Intialize gameover texture
 void initGameOver(){
     gameOverText = loadTexture("gfx/gameover.png");
 }
+
+//Draw gameover screen and do input
 void drawGameOver(){
     drawBackground();
     SDL_Rect r;
@@ -229,6 +237,8 @@ void drawGameOver(){
     drawMouse();
     doYesNo();
 }
+
+//Draw victory screen and do input
 void drawVictory(){
     drawBackground();
     SDL_Rect r;
@@ -242,12 +252,16 @@ void drawVictory(){
     drawMouse();
     doYesNo();
 }
+
+//Intialize background textures and set first background
 void initBackGround(){
     allBackground[0] = loadTexture((char*)"gfx/background1.jpg");
     allBackground[1] = loadTexture((char*)"gfx/background2.jpg");
 
     background = allBackground[0];
 }
+
+//Intialize player
 static void initPlayer()
 {
     player = new Entity();
@@ -264,11 +278,14 @@ static void initPlayer()
 	player->side = SIDE_PLAYER;
 	player->health = PLAYER_HEALTH;
 }
+
+//Pause game
 static void doPause(){
     if(InPauseButton() && app.mouse.button[SDL_BUTTON_LEFT]){
         app.pause = 1;
     }else app.pause = 0;
 }
+// Return to menu start
 static void doHome(){
         if(InHomeButton() && app.mouse.button[SDL_BUTTON_LEFT]){
             initTitle();
@@ -277,6 +294,7 @@ static void doHome(){
 
 }
 
+// Do logic for player
 static void doPlayer()
 {
     if(player != NULL){
@@ -317,6 +335,8 @@ static void doPlayer()
 	player->y += player->dy;
     }
 }
+
+//Do logic for meteorites
 static void doMeteorites(){
     Entity *m , *prev;
     prev = &stage.meteoHead;
@@ -349,6 +369,8 @@ static void doMeteorites(){
         prev = m;
     }
 }
+
+// Do logic do heart icon
 static void doHeart(){
     Entity *h, *prev;
     prev = &stage.heartHead;
@@ -396,6 +418,7 @@ static void doHeart(){
     }
 }
 
+// Intialize bullets for boss1
 static void bossfireBullet(Entity *e){
     Entity *bullet;
     for(int i = 1; i <= 3; i++){
@@ -413,6 +436,8 @@ static void bossfireBullet(Entity *e){
     e->reload = FPS + ( rand() % FPS * 2 );
     }
 }
+
+//Intialize bullets for boss2
 static void bossfireBullet2(Entity *e){
     Entity *bullet;
     for(int i = 1; i <= 3; i++){
@@ -430,6 +455,8 @@ static void bossfireBullet2(Entity *e){
     e->reload = FPS + ( rand() % FPS * 2 );
     }
 }
+
+//Intialize special bullets for boss2
 static void FireRainBullet(Entity *e){
     Entity *b;
     for(int i = 1; i <= 5; i++){
@@ -457,6 +484,8 @@ static void FireRainBullet(Entity *e){
     }
 }
 
+
+// Do logic for enemies
 static void doEnemies()
 {
 	Entity *e;
@@ -496,6 +525,7 @@ static void doEnemies()
 	}
 }
 
+// Do logic for all planes
 static void doFighters()
 {
 	Entity *e, *prev;
@@ -551,6 +581,8 @@ static void doFighters()
 		prev = e;
 	}
 }
+
+// Do logic for stars
 void doStarfield()
 {
 	for (int i = 0 ; i < MAX_STARS ; i++)
@@ -563,6 +595,7 @@ void doStarfield()
 	}
 }
 
+// Do logic for explosions
 static void doExplosions()
 {
 	Explosion *e, *prev;
@@ -590,6 +623,7 @@ static void doExplosions()
 	}
 }
 
+// Do logic for debrises
 static void doDebris()
 {
 	Debris *d, *prev;
@@ -618,6 +652,8 @@ static void doDebris()
 		prev = d;
 	}
 }
+
+// Do logic for point icons
 static void doPoints()
 {
 	Entity *e, *prev;
@@ -680,6 +716,8 @@ static void doPoints()
 		prev = e;
 	}
 }
+
+// Intialize explosions
 static void addExplosions(int x, int y, int num)
 {
 	Explosion *e;
@@ -724,6 +762,7 @@ static void addExplosions(int x, int y, int num)
 	}
 }
 
+// Intialize debrises
 static void addDebris(Entity *e)
 {
 	Debris *d;
@@ -758,6 +797,7 @@ static void addDebris(Entity *e)
 		}
 	}
 }
+
 static void addBigDebris(Entity *e)
 {
 	Debris *d;
@@ -789,6 +829,8 @@ static void addBigDebris(Entity *e)
 		}
 	}
 }
+
+// Intialize point icons
 static void addPoints(int x, int y)
 {
 	Entity *e;
@@ -812,6 +854,7 @@ static void addPoints(int x, int y)
 	e->y -= e->h / 2;
 }
 
+// Intialize player bullet
 static void fireBullet()
 {
 	Entity *bullet;
@@ -839,6 +882,8 @@ static void fireBullet()
 
 	player->reload = 16;
 }
+
+// Intialize enemy bullets
 static void fireAlienBullet(Entity *e)
 {
 	Entity *bullet;
@@ -892,6 +937,8 @@ static void fireAlienBullet(Entity *e)
 
 	e->reload = FPS + ( rand() % FPS * 2 );
 }
+
+// Entity die
 static void die(Entity *self)
 {
 	int i, x, y;
@@ -911,6 +958,7 @@ static void die(Entity *self)
 	}
 }
 
+// Do logic for all bullets
 static void doBullets()
 {
 	Entity *b, *prev;
@@ -943,6 +991,8 @@ static void doBullets()
 		prev = b;
 	}
 }
+
+// Check collisions between planes and bullets
 static bool bulletHitFighter(Entity *b)
 {
 	Entity *e;
@@ -977,6 +1027,8 @@ static bool bulletHitFighter(Entity *b)
 
 	return false;
 }
+
+// Intialize enemies
 static void spawnEnemies()
 {
 	Entity *enemy;
@@ -1011,6 +1063,7 @@ static void spawnEnemies()
 	}
 }
 
+// Intialize heart icons
 static spawnHeart(){
     Entity *h;
     if(--heartSpawnTimer <= 0){
@@ -1029,6 +1082,8 @@ static spawnHeart(){
         heartSpawnTimer = 10 * FPS;
     }
 }
+
+// Intialize boss1
 static void spawnBoss(){
     if(bossSpawnTimes-- > 0)
     {
@@ -1048,6 +1103,8 @@ static void spawnBoss(){
     boss->reload = FPS * (1 + (rand() % 3));
     }
 }
+
+// Intialize boss2
 static void spawnBoss2(){
     if(bossSpawnTimes2-- > 0)
     {
@@ -1068,6 +1125,7 @@ static void spawnBoss2(){
     }
 }
 
+// Intialize meteorites
 static void spawnMeteorite(){
     Entity *meteo;
     if(--meteoriteSpawnTimer < 0){
@@ -1089,6 +1147,7 @@ static void spawnMeteorite(){
     }
 }
 
+// Don't let player to be able to run off-screen
 static void clipPlayer()
 {
 	if (player != NULL)
@@ -1115,7 +1174,7 @@ static void clipPlayer()
 	}
 }
 
-
+// Present background
 void drawBackground()
 {
 	SDL_Rect dest;
@@ -1127,12 +1186,14 @@ void drawBackground()
 
 }
 
+// Present meteorites
 void drawMeteorite(){
     for(Entity* m = stage.meteoHead.next; m != NULL ; m = m->next){
         blit(m->texture, m->x, m->y);
     }
 }
 
+// Present point icons
 static void drawPoints()
 {
 	Entity* e;
@@ -1145,6 +1206,8 @@ static void drawPoints()
 		}
 	}
 }
+
+// Present stars
 void drawStarfield()
 {
 	int i, c;
@@ -1159,7 +1222,7 @@ void drawStarfield()
 	}
 }
 
-
+// Present debrises
 static void drawDebris()
 {
 	Debris *d;
@@ -1170,6 +1233,7 @@ static void drawDebris()
 	}
 }
 
+// Present explosions
 static void drawExplosions()
 {
 	Explosion *e;
@@ -1187,6 +1251,8 @@ static void drawExplosions()
 
     SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_NONE);
 }
+
+// Present all planes
 static void drawFighters()
 {
 	Entity *e;
@@ -1202,6 +1268,7 @@ static void drawFighters()
     }
 }
 
+// Present all bullets
 static void drawBullets()
 {
 	Entity *b;
@@ -1212,6 +1279,8 @@ static void drawBullets()
 		blit(b->texture, b->x, b->y);
 	}
 }
+
+// Present head up display
 static void drawHud()
 {
 	drawText(10, 10, 255, 255, 255 ,"SCORE: %03d", stage.score);
@@ -1225,6 +1294,8 @@ static void drawHud()
 		drawText(900, 10, 255, 255, 255 ,"HIGH SCORE: %03d", highscore);
 	}
 }
+
+// Present life of player
 static void drawLives(){
     SDL_Rect rect;
 
@@ -1236,6 +1307,7 @@ static void drawLives(){
 
 }
 
+// Present heart icon
 static void drawHeart(){
     Entity *h;
 
@@ -1245,6 +1317,8 @@ static void drawHeart(){
         }
     }
 }
+
+// Present life of bosses
 static void drawBossBar(){
     if(boss != NULL)
     {
@@ -1264,11 +1338,14 @@ static void drawBossBar(){
     SDL_RenderDrawRect(app.renderer, &r);
     }
 }
+
+// Present mouse
 void drawMouse(){
     SDL_GetMouseState(&app.mouse.x, &app.mouse.y);
 	blitM(targetTexture,app.mouse.x,app.mouse.y,1);
 }
 
+// Present blackhole
 void drawBlackHole(){
         SDL_Rect rect;
 
@@ -1276,6 +1353,8 @@ void drawBlackHole(){
 
     blit(blackHoleTexture, SCREEN_WIDTH - rect.w, SCREEN_HEIGHT / 2 - rect.h/2);
 }
+
+// Do logic for blackhole
 void doBlackHole(){
     SDL_Rect rect;
 
@@ -1288,6 +1367,8 @@ void doBlackHole(){
         stage.round = 2;
     }
 }
+
+// Draw pause screen and do input
 void viewPauseStage(){
     drawContinue();
     drawQuit();
@@ -1298,6 +1379,7 @@ void viewPauseStage(){
     drawMouse();
 }
 
+// All logic of game
 static void logic()
 {
     doPause();
@@ -1342,6 +1424,7 @@ static void logic()
 	}
 }
 
+// All draw of game
 static void draw()
 {
     drawBackground();

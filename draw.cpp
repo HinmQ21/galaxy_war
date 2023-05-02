@@ -1,5 +1,6 @@
 #include"draw.h"
 
+// Load texture from a path
 SDL_Texture *loadTexture(char *filename) {
     SDL_Texture *texture;
 
@@ -9,6 +10,8 @@ SDL_Texture *loadTexture(char *filename) {
 
     return texture;
 }
+
+// Present a texture at a coordinate
 void blit(SDL_Texture *texture, int x, int y)
 {
 	SDL_Rect dest;
@@ -19,6 +22,8 @@ void blit(SDL_Texture *texture, int x, int y)
 
 	SDL_RenderCopy(app.renderer, texture, NULL, &dest);
 }
+
+// Present a part of texture at a coordinate
 void blitRect(SDL_Texture *texture, SDL_Rect *src, int x, int y)
 {
 	SDL_Rect dest;
@@ -30,6 +35,8 @@ void blitRect(SDL_Texture *texture, SDL_Rect *src, int x, int y)
 
 	SDL_RenderCopy(app.renderer, texture, src, &dest);
 }
+
+// Present mouse
 void blitM(SDL_Texture *texture, int x, int y, int center)
 {
 	SDL_Rect dest;

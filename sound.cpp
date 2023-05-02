@@ -43,16 +43,4 @@ void initMusic(){
     loadMusic((char*)"music/jojo_cut.ogg");
     playMusic(1);
 }
-//void doMusic(){
-//    if(app.keyboard[SDL_SCANCODE_M] && app.playmusic){
-//        Mix_HaltMusic();
-//        app.playmusic = 0;
-//    }
-//    if(app.keyboard[SDL_SCANCODE_M] && !app.playmusic)
-//    {
-//        app.playmusic = 1;
-//        loadMusic((char*)"music/jojo_cut.ogg");
-//        playMusic(1);
-//    }
-//
-//}
+
